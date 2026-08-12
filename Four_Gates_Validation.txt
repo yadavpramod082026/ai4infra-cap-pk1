@@ -1,7 +1,10 @@
 ## FinBridge Lab - Terraform Four Gates Validation
 
 # Gate  01: LINT (Code Quality & Formatting)
-**Command**: `terraform fmt -recursive && terraform validate`
+**Command**: `terraform fmt && terraform validate`
+C:\Users\labuser\Documents\Capstone\01_iac_terraform>terraform fmt
+C:\Users\labuser\Documents\Capstone\01_iac_terraform>terraform validate
+Success! The configuration is valid.
 
 **Validation Checklist**:
 - ✓ All .tf files formatted to HCL2 standard
