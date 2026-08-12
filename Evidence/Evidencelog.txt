@@ -1,0 +1,10 @@
+Evidence Log
+Status
+Live execution completed on 2026-08-12 from this workspace. Terraform was applied, idempotency was re-checked, the restore-first gate was executed successfully, the storage fault was injected, and post-fault recovery was verified.
+
+Infrastructure Evidence
+terraform apply completed successfully from 01_iac_terraform> after correcting the Windows VM hostname and explicit platform update drift setting.
+Post-apply idempotency verification completed successfully: a follow-up Terraform plan returned No changes, closing the repeated-apply gate.
+Storage account under test: finbridgestoragelabsa
+Container under test: workload-data
+Replication SKU observed during restore: Standard_RAGRS
