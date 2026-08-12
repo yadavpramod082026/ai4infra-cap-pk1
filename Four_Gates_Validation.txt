@@ -1,0 +1,113 @@
+## FinBridge Lab - Terraform Four Gates Validation
+
+# Gate  01: LINT (Code Quality & Formatting)
+**Command**: `terraform fmt -recursive && terraform validate`
+
+**Validation Checklist**:
+- ✓ All .tf files formatted to HCL2 standard
+- ✓ terraform validate passes without errors
+- ✓ No deprecated resource types or arguments
+- ✓ Variable descriptions present
+- ✓ Tags applied consistently
+
+**Expected Result**: Both commands complete without errors
+**Command to Run**: 
+```bash
+cd 01_iac_terraform
+terraform fmt -recursive
+terraform validate
+```
+
+---
+
+## Gate 02: DRY-RUN (Plan Integrity)
+**Command**: `terraform plan -out=tfplan`
+
+**Validation Checklist**:
+- ✓ No errors during plan generation
+- ✓ All resources have explicit dependencies resolved
+- ✓ Resource count is expected (13 resources)
+- ✓ No warnings about deprecated resources
+- ✓ Outputs defined and accessible
+
+**Expected Resources**:
+1. azurerm_resource_group
+2. azurerm_virtual_network
+3. azurerm_subnet
+4. azurerm_network_security_group (5 rules embedded)
+5. azurerm_public_ip
+6. azurerm_network_interface
+7. azurerm_subnet_network_security_group_association
+8. azurerm_storage_account
+9. azurerm_storage_container
+10. azurerm_windows_virtual_machine
+11. azurerm_virtual_machine_extension
+
+**Command to Run**:
+```bash
+cd 01_iac_terraform
+terraform plan -out=tfplan
+terraform show tfplan | grep -E "Plan:|No changes"
+```
+
+---
+
+## Gate 03: IDEMPOTENCY (Repeated Apply)
+**Validation Checklist**:
+- ✓ First `terraform apply` creates all resources
+- ✓ Second `terraform apply` with no .tf changes results in "No changes" or only metadata updates
+- ✓ State file is consistent after multiple applies
+- ✓ Resource IDs remain stable across applies
+
+**How to Test**:
+```bash
+terraform apply -auto-approve
+# Wait for completion
+terraform plan  # Should show "No changes"
+terraform apply -auto-approve  # Should show "No changes" or minimal updates
+terraform show | grep -E "resources"
+```
+
+**Pass Criteria**: After first apply, subsequent applies show `0 to add, 0 to change, 0 to destroy`
+
+---
+
+# Gate 04: BOUNDED SCOPE (No Sprawl)
+**Validation Checklist**:
+- ✓ Only FinBridge environment resources created
+- ✓ No shared/inherited infrastructure modified
+- ✓ Resource naming follows `${environment}-*` pattern
+- ✓ All resources tagged with `environment` tag
+- ✓ Cleanup is possible with single `terraform destroy`
+- ✓ No hard-coded region dependencies beyond variable
+
+**Scope Verification**:
+```bash
+terraform plan | grep -i "finbridge"
+# All 13 resources should be finbridge-storage-lab or finbridge-
+```
+
+**Cleanup Command**:
+```bash
+terraform destroy -auto-approve
+```
+
+---
+
+# Execution Summary
+
+| Gate | Status | Evidence |
+|------|--------|----------|
+| LINT | PASS | 2026-08-12: `terraform fmt -recursive` normalized `main.tf` and `terraform.tfvars`; `terraform validate` returned `Success! The configuration is valid.` |
+| DRY-RUN | PASS | 2026-08-12: `terraform plan -out=tfplan` completed successfully against the authenticated Azure CLI session with `Plan: 11 to add, 0 to change, 0 to destroy.` |
+| IDEMPOTENCY | PASS | 2026-08-12: `terraform apply -auto-approve` completed successfully after correcting live deployment issues, and the follow-up `terraform plan` returned `No changes`, confirming `0 to add, 0 to change, 0 to destroy`. |
+| BOUNDED SCOPE | PASS | 2026-08-12 live apply and follow-up plan remained limited to the intended FinBridge lab resources in `finbridge-storage-lab-*`, with no unrelated infrastructure changes detected. |
+
+---
+
+# Notes
+- Terraform version: >= 1.0
+- Provider: Azure RM >= 3.0
+- State: Local (in production use Azure Storage backend)
+- Destroy safely: All resources tagged for easy cleanup
+- Submission note: All four gates are now closed with live execution evidence from 2026-08-12.
