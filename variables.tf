@@ -20,6 +20,22 @@ variable "vm_admin_password" {
   description = "Windows VM admin password"
   type        = string
   sensitive   = true
+  nullable    = false
+
+  validation {
+    condition     = length(var.vm_admin_password) >= 12
+    error_message = "VM admin password must be at least 12 characters long."
+  }
+
+  validation {
+    condition = (
+      can(regex("[A-Z]", var.vm_admin_password)) &&
+      can(regex("[a-z]", var.vm_admin_password)) &&
+      can(regex("[0-9]", var.vm_admin_password)) &&
+      can(regex("[^A-Za-z0-9]", var.vm_admin_password))
+    )
+    error_message = "VM admin password must include uppercase, lowercase, number, and special character."
+  }
   # In real scenario, use Azure Key Vault or environment variables
 }
 

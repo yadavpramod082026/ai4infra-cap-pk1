@@ -1,0 +1,6 @@
+location               = "eastus"
+environment            = "finbridge-storage-lab"
+vm_admin_username      = "azureadmin"
+# Use a strong password that meets Azure complexity requirements.
+vm_admin_password      = "ChangeMe_Str0ng!"
+storage_replication_type = "RAGRS"

@@ -1,0 +1,14 @@
+# Local Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Sensitive variable values
+terraform.tfvars
+*.auto.tfvars
+
+# CLI/runtime files
+crash.log
+crash.*.log
+*.backup

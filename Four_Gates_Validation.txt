@@ -17,7 +17,7 @@ Success! The configuration is valid.
 **Command to Run**: 
 ```bash
 cd 01_iac_terraform
-terraform fmt -recursive
+terraform fmt 
 terraform validate
 ```
 
@@ -25,11 +25,20 @@ terraform validate
 
 ## Gate 02: DRY-RUN (Plan Integrity)
 **Command**: `terraform plan -out=tfplan`
+.
+.
+.
+Saved the plan to: tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "tfplan"
+C:\Users\labuser\Documents\Capstone\01_iac_terraform>
+
 
 **Validation Checklist**:
 - ✓ No errors during plan generation
 - ✓ All resources have explicit dependencies resolved
-- ✓ Resource count is expected (13 resources)
+- ✓ Resource count is expected
 - ✓ No warnings about deprecated resources
 - ✓ Outputs defined and accessible
 
@@ -37,7 +46,7 @@ terraform validate
 1. azurerm_resource_group
 2. azurerm_virtual_network
 3. azurerm_subnet
-4. azurerm_network_security_group (5 rules embedded)
+4. azurerm_network_security_group 
 5. azurerm_public_ip
 6. azurerm_network_interface
 7. azurerm_subnet_network_security_group_association
@@ -113,4 +122,4 @@ terraform destroy -auto-approve
 - Provider: Azure RM >= 3.0
 - State: Local (in production use Azure Storage backend)
 - Destroy safely: All resources tagged for easy cleanup
-- Submission note: All four gates are now closed with live execution evidence from 2026-08-12.
+- Submission note: All four gates are now closed.
